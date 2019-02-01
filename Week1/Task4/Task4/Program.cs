@@ -10,13 +10,13 @@ namespace Task4
     {
         static void Main(string[] args)
         {
-            int n = int.Parse(Console.ReadLine()); // Вводим размер массива
-            string[,] a = new string[n, n]; // Выделяем места в памяти для двумерного массива
+            int n = int.Parse(Console.ReadLine()); // Size of array
+            string[,] a = new string[n, n]; // Allocate memory locations for two-dimentional array
             for (int i = 0; i < n; i++)
             {
                 for (int j = 0; j < n; j++)
                 {
-                    if (i == j || i > j) a[i, j] = "[*]"; // Если данное условие совпадает, то элементу массива присваиваем "[*]"
+                    if (i == j || i > j) a[i, j] = "[*]"; //If this condition holds we assign to array this "[*]"
                 }
             }
 
@@ -24,7 +24,7 @@ namespace Task4
             {
                 for (int j = 0; j < n; j++)
                 {
-                    Console.Write(a[i, j]); // Выводим двумерный массив
+                    Console.Write(a[i, j]); // Outputing the two-dimentional array
                 }
                 Console.WriteLine();
             }

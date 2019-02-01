@@ -9,17 +9,17 @@ with two parameters and create methods to access name, id and increment the year
 
 namespace Task2
 {
-    class Student         // Создаем класс Student
+    class Student         // Creating a class Student
     {
-        public string name; // Создаем глобальные переменные этого класса, т.е. name, id и year
+        public string name; // Creating global variables, i.e. name, id and year
         public string id;
-        public int year; // Переменная year не будет передаваться в конструктор, т.к. конструктор содержит только 2 параметра по условию, а именно name и id
-        // Объект будет выводится 4 раза (т.к. бакалавр включает в себя 4 года обучения) и при каждом выводе год обучения будет увеличиваться на 1 
-        // Поэтому по дефолту  переменной year присваивается значение = 0
+        public int year; // "year" variable will not be sent to constructor as constructor has only two parameters
+        // So year will be just outputed after name and id and each time it is outputed its value will increment by 1
+        // By default "year" variable equals 1. It will be outputed 4 times as Bachelor includes only 4 years of study
 
-        public Student(string name, string id) // Создаем конструктор класса c 2мя параметрами, в который будем закидывать объект
+        public Student(string name, string id) // Creating a constructor with two parameters, which will initialize an object
         {
-            this.name = name; // Инициализируем переменные. Используем указатель this для того, чтобы дать компилятору понять что и куда нужно скопировать
+            this.name = name; // Initialize variables. Use pointer "this" in order to make a compiler understand what to copy and where to copy
             this.id = id;
         }
 
@@ -38,7 +38,7 @@ namespace Task2
         // Method 3 to access the year and increment it by 1
         public int getYear()
         {
-            year++;  // year++ делаем для того чтобы при каждом выводе объекта его год обучения увеличивался на 1
+            year++;  // year++ to increment year by 1 each time when it is outputed
             return year;
         }
 
@@ -56,15 +56,14 @@ namespace Task2
         //Main Method
         static void Main(string[] args)
         {
-            string name = Console.ReadLine(); // Вводим данные
+            string name = Console.ReadLine(); // Input data
             string id = Console.ReadLine();
-            Student st = new Student(name, id); // Создаем объект и закидываем его в конструктор с 2мя параметрами, расположенный в классе Student
-
-            // Cоздаем цикл для того чтобы объект выводился 4 раза и при каждом выводе год обучения объекта увеличивался на 1
+            Student st = new Student(name, id); // Creating an object and sending it to constructor
+            // Creating a cycle to make an object be outputed 4 times and each time year to increase by 1
             for (int i = 0; i < 4; i++)
             {
                 Console.WriteLine();
-                Console.WriteLine(st.getInfo()); // Выводим полную информацию о студенте
+                Console.WriteLine(st.getInfo()); // Outputing the whole info about the student
                 Console.WriteLine();
             }
 
