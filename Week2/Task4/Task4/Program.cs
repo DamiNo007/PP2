@@ -16,7 +16,7 @@ namespace Task4
         public static void Copy(string source, string dest)
         {
             File.Copy(source, dest,true); //Copying the file from one directory to another
-            Delete(source); // Call Delete function in order to delete the file from the source directory
+            Delete(source); // Call the Delete() function in order to delete the file from the source directory
 
         }
 
