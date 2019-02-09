@@ -11,19 +11,18 @@ namespace Task4
     {
         public static string FolderName = @"C:\Users\User\PP2\Week2\Task4\FileToCopy";
         public static string fileName = "FileToCopy.txt";
+        
+        //A Method to Delete the file from the source location when it's already copied to another location
+        public static void Delete(string source)
+        {
+            File.Delete(source); //Deleting the file from the source directory
+        }
 
         //A Method to Copy the file from one location to another
         public static void Copy(string source, string dest)
         {
             File.Copy(source, dest,true); //Copying the file from one directory to another
             Delete(source); // Call the Delete() function in order to delete the file from the source directory
-
-        }
-
-        //A Method to Delete the file from the source location when it's already copied to another location
-        public static void Delete(string source)
-        {
-            File.Delete(source); //Deleting the file from the source directory
         }
 
         // Or instead those two methods we can use File.Move function in order to move file from one location to another
