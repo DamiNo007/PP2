@@ -15,6 +15,8 @@ namespace FarManager1
         public int cursor; // the "cursor" variable 
         public int size; // Variable "size" gets size of the FileSystemInfo  
         public bool show_hidden_files; // if "show_hidden_files" is true => show hidden files
+        public int fixed_size = 10;
+        public int z = 0;
 
         //Creating a constructor FarManager
         public FarManger()
@@ -38,6 +40,10 @@ namespace FarManager1
                 Directory.Delete(fs.FullName, true); //Deletes the directory with all files and directories inside it
 
             }
+            //Updating the cursor, z and fixed_size
+            cursor = 0;
+            z = 0;
+            fixed_size = 10;
         }
 
         // A Method for Renaming the files and directories
@@ -57,7 +63,7 @@ namespace FarManager1
                 Directory.Move(fs.FullName, Path.GetDirectoryName(fs.FullName) + "/" + new_name);
             }
 
-            // if user changer the name of the folder
+            // if user changes the name of the folder
             else
             {
                 //Copying the file contents from the file with one name to a file with another name
@@ -65,7 +71,10 @@ namespace FarManager1
                 //Deleting the initial file's path
                 File.Delete(fs.FullName); // delete initial file
             }
-            cursor = 0;// refresh the cursor
+            // refresh the cursor, z and fixed_size
+            cursor = 0;
+            z = 0;
+            fixed_size = 10;
         }
 
 
@@ -92,7 +101,7 @@ namespace FarManager1
 
         // A Method for Coloring the files in one color and directories in another one
         // also changes the color of the current directory to which the cursor points out
-        public void Color(FileSystemInfo fi, int index)
+        public void COLOR(FileSystemInfo fi, int index)
         {
             // If our index equals cursor then it is our current directory and it should be colored somehow to be highlighted
 
@@ -123,7 +132,20 @@ namespace FarManager1
             cursor--;
             // if cursor goes upper than the first element it should go up to the last element in a row
             if (cursor < 0)
-                cursor = size - 1;
+            {
+                cursor = size-1;
+                z = size-fixed_size;
+                fixed_size = size;
+                
+            }
+
+            // if cursor goes upper than z there is a shift of the shown interval up by 1
+            else if (cursor < z)
+            {
+                z--;
+                if (fixed_size > 0)
+                    fixed_size--;
+            }
         }
 
         // A Method which changes our cursor's value as we move down
@@ -132,7 +154,20 @@ namespace FarManager1
             // if cursor goes lower than the last element it should go up to the first element in a row
             cursor++;
             if (cursor == size)
+            {
                 cursor = 0;
+                z = 0;
+                fixed_size = 10;   
+            }
+
+            // if cursor goes lower than fixed_size-1 the shown interval shifts down by one
+            else if (cursor > fixed_size-1)
+            {
+                z++;
+
+                if(fixed_size<size)
+                fixed_size++;
+            }
         }
 
 
@@ -145,22 +180,26 @@ namespace FarManager1
             //Size of the "FileSystemInfo" array
             size = fi.Length;
             //index of the elements in the array
-            int index = 0;
-            foreach (FileSystemInfo fs in fi)
+
+            if (fi.Length <= 10)
             {
-                // When not to how hidden files the size must be changed as the number of elements changes
-                if (!show_hidden_files && fs.Name.StartsWith("."))
+                for (int i = 0; i < fi.Length; i++)
                 {
-                    size--;
-                    continue;
+                        COLOR(fi[i], i);
+                        Console.WriteLine(i + 1 + "." + fi[i].Name);
                 }
 
-                Color(fs, index);
-
-                Console.WriteLine(index + 1 + "." + fs.Name);
-                index++;
             }
 
+            else
+            {
+                for (int i = z; i < fixed_size; i++)
+                {
+                    COLOR(fi[i], i);
+                        Console.WriteLine(i + 1 + "." + fi[i].Name);
+
+                }
+            }
         }
 
 
@@ -177,12 +216,16 @@ namespace FarManager1
             //Creating an empty FileSystemInfo to user later
             FileSystemInfo fs = null;
 
+
             // A cycle to always show the contents and update them
             while (true)
             {
+                
                 Console.BackgroundColor = ConsoleColor.Black;
                 Console.Clear();
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
                 Console.WriteLine(path);
+                Console.ResetColor();
                 //Calling a show function
                 SHOW(path);
 
@@ -199,24 +242,24 @@ namespace FarManager1
                     DOWN();
                 }
 
-                if (key.Key == ConsoleKey.RightArrow)
-                {
-                    cursor = 0;
-                    show_hidden_files = false;
-                }
-                if (key.Key == ConsoleKey.LeftArrow)
-                {
-                    cursor = 0;
-                    show_hidden_files = true;
-                }
 
                 //If user press Backspace we go to parrent(previous) directory 
                 if (key.Key == ConsoleKey.Backspace)
                 {
-                    cursor = 0;
-                    directory = directory.Parent; // Updating the directory
-                    fi = directory.GetFileSystemInfos(); //Updating the "FileSystemInfo" array with new directory
-                    path = directory.FullName; // Updating the path 
+                    try
+                    {
+                        z = 0;
+                        fixed_size = 10;
+                        cursor = 0;
+                        directory = directory.Parent; // Updating the directory
+                        fi = directory.GetFileSystemInfos(); //Updating the "FileSystemInfo" array with new directory
+                        path = directory.FullName; // Updating the path 
+                    }
+                    // If we get NullReferenceException we skip it and continue
+                    catch (NullReferenceException)
+                    {
+                        continue;
+                    }
                 }
 
                 //If user press Enter we enter the directory, or if it is a file he presses Enter on we open the contents of the file
@@ -224,32 +267,50 @@ namespace FarManager1
                 {
                     //Creating a variable "k" for indexing the elements of the array
                     int k = 0;
-
-                    for (int i = 0; i < fi.Length; i++)
+                    try
                     {
-                        //if cursor equals "k" we are on the current directory
-                        if (cursor == k)
+                        for (int i = 0; i < fi.Length; i++)
                         {
-                            fs = fi[i];
-                            cursor = 0;
-                            // if it is a folder we are on => we open it
-                            if (fs.GetType() == typeof(DirectoryInfo))
-                            {
-                                cursor = 0;
-                                directory = new DirectoryInfo(fs.FullName); //Updating the directory
-                                fi = directory.GetFileSystemInfos(); // Updating the "FileSystemInfo" array with new directory
-                                path = fs.FullName; // Updating the path
-                                break;
-                            }
 
-                            // If it is a file we are on we call the function OPEN() to open the file
-                            else
+                            //if cursor equals "k" we are on the current directory
+                            if (cursor == k)
                             {
-                                OPEN(fs);
+                                fs = fi[i];
+
+                                // if it is a folder we are on => we open it
+                                if (fs.GetType() == typeof(DirectoryInfo))
+                                {
+                                    //Updating the indexes
+                                    z = 0;
+                                    cursor = 0;
+                                    fixed_size = 10;
+                                    
+                                    //Updating the directory
+                                    directory = new DirectoryInfo(fs.FullName); 
+                                    // Updating the "FileSystemInfo" array with new directory
+                                    fi = directory.GetFileSystemInfos(); 
+                                    // Updating the path
+                                    path = fs.FullName; 
+                                    break;
+                                }
+
+                                // If it is a file we are on we call the function OPEN() to open the file
+                                else
+                                {
+                                    OPEN(fs);
+                                }
+
                             }
+                            
+                            // Incrementing the index
+                            k++; 
                         }
+                    }
 
-                        k++; // Incrementing the index
+                    //If we get UnauthorizedAccessException we skip it and continiue
+                    catch (UnauthorizedAccessException)
+                    {
+                        continue;
                     }
 
                 }
@@ -291,8 +352,13 @@ namespace FarManager1
         static void Main(string[] args)
         {
             FarManger fm = new FarManger();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.Write("Enter the path: ");
+            Console.ForegroundColor = ConsoleColor.DarkYellow;
             //The main path
-            string path = @"C:\";
+            string path = Console.ReadLine();
+            Console.ResetColor(); // Default color
+            
             //Call function to Start
             fm.BEGIN(path);
         }
