@@ -8,14 +8,14 @@ namespace Snake
 {
     class Program
     {
-        //public const int height = 30;
-        //public const int width = 20;
 
         static void Main(string[] args)
         {
-            //Console.SetWindowSize(width, height + 6);
+
             Console.Clear();
+            
             Game game = new Game();
+            game.ShowBanner();
             game.Start();
             Console.ReadKey();
         }

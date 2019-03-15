@@ -8,55 +8,59 @@ namespace Snake
 {
     public class Snake:GameObject
     {
-        public string dir, pre_dir;
+        enum Direction
+        {
+            NONE,
+            RIGHT,
+            LEFT,
+            UP,
+            DOWN
+        }
+
+        Direction dir = Direction.NONE;
+
         public Snake(int x, int y, char sign, ConsoleColor color) : base(x, y, sign, color) { }
 
         public void SetUp(ConsoleKeyInfo key)
         {
             if (key.Key == ConsoleKey.UpArrow)
             {
-                pre_dir = dir;
-                dir = "UP";
-                Move(dir);
+                dir = Direction.UP;
             }
 
             if (key.Key == ConsoleKey.DownArrow)
             {
-                pre_dir = dir;
-                dir = "DOWN";
-                Move(dir);
+                dir = Direction.DOWN;
             }
             if (key.Key == ConsoleKey.RightArrow)
             {
-                pre_dir = dir;
-                dir = "RIGHT";
-                Move(dir);
+                dir = Direction.RIGHT;
             }
                 
             if (key.Key == ConsoleKey.LeftArrow)
             {
-                pre_dir = dir;
-                dir = "LEFT";
-                Move(dir);
+                dir = Direction.LEFT;
             }
                 
         }
 
-        public void Move(string dir)
+        public void Move()
         {
-            for(int i = body.Count -1; i>0; i--)
+            if (dir == Direction.NONE)
+                return;
+            for (int i = body.Count -1; i>0; i--)
             {
                 body[i].x = body[i - 1].x;
                 body[i].y = body[i - 1].y;
             }
 
-            if(dir=="UP")
+            if(dir==Direction.UP)
                 body[0].y--;
-            if (dir == "DOWN")
+            if (dir == Direction.DOWN)
                 body[0].y++;
-            if (dir == "RIGHT")
+            if (dir == Direction.RIGHT)
                 body[0].x++;
-            if (dir == "LEFT")
+            if (dir == Direction.LEFT) 
                 body[0].x--;
 
             }

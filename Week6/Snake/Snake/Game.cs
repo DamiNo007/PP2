@@ -15,7 +15,38 @@ namespace Snake
         public Food food;
         public Wall wall;
         public int score=0;
-        
+        public ConsoleKeyInfo keypress = new ConsoleKeyInfo();
+        //public const int height = 30;
+        //public const int width = 20;
+        public void ShowBanner()
+        {
+            Console.ForegroundColor = ConsoleColor.Blue;
+            Console.CursorVisible = false;
+
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("                                                  WELCOME THE SNAKE GAME!!!");
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("                                                      PRESS ANY KEY...");
+            Console.WriteLine();
+            Console.WriteLine();
+            Console.WriteLine("                                                 - Use Arrows to move the snake ");
+            Console.WriteLine("                                                 - Press S to pause");
+            Console.WriteLine("                                                 - Press R to reset game ");
+            Console.WriteLine("                                                 - Press ESC to quit game");
+            Console.WriteLine();
+
+            keypress = Console.ReadKey(true);
+            if (keypress.Key == ConsoleKey.Escape)
+            {
+                Environment.Exit(0);
+            }
+        }
+
         public void Draw()
         {
             Console.Clear();
@@ -49,36 +80,48 @@ namespace Snake
         {
             ConsoleKeyInfo key = Console.ReadKey();
 
-            while(isAlive && key.Key!= ConsoleKey.Backspace)
+            Thread thread = new Thread(MoveSnake);
+            thread.Start();
+
+            while (isAlive && key.Key!= ConsoleKey.Escape)
             {
-                Draw();
                 key = Console.ReadKey();
-                if (snake.IsCollision(food))
-                { 
-                    score+=10;
-                    snake.body.Add(new Point(0, 0));
-                    while (food.IsCollision(snake) || food.IsCollision(wall))  
-                      food.Generate();
-
-                    if (snake.body.Count % 10 == 0)
-                        wall.NextLevel();
-                }
-
-                else if (snake.IsCollision(wall))
-                {
-                    isAlive = false;
-                }
-                
                 snake.SetUp(key);
-                
             }
             Console.Clear();
-            Console.SetCursorPosition(10, 10);
+            Console.SetCursorPosition(30, 30);
             Console.ForegroundColor = ConsoleColor.DarkRed;
             Console.WriteLine("Game Over!!!");
             Console.SetCursorPosition(10, 12);
             Console.WriteLine("Your score is: " + score);
             Console.ReadKey();
+        }
+
+        public void MoveSnake()
+        {
+            while (isAlive)
+            {
+                snake.Move();
+                if (snake.IsCollision(food))
+                {
+                    score += 10;
+                    snake.body.Add(new Point(0, 0));
+                    while (food.IsCollision(snake) || food.IsCollision(wall))
+                        food.Generate();
+
+                    if (snake.body.Count % 5 == 0)
+                        wall.NextLevel();
+                }
+
+                if (snake.IsCollision(wall))
+                {
+                    isAlive = false;
+                }
+                        Draw();
+
+                Thread.Sleep(50);
+            }
+
         }
     }
 }
