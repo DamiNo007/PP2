@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Snake
+namespace Snake_Game
 {
-    // Creating Class Point
-    public class Point
+   public class Point
     {
         public int x;
         public int y;
-        //Constructor
+
         public Point(int x, int y)
         {
             this.x = x;

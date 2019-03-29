@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.IO;
 using System.Threading.Tasks;
+using System.IO;
 
-namespace Snake
+namespace Snake_Game
 {
     public class Wall:GameObject
     {
@@ -25,18 +25,21 @@ namespace Snake
 
         public void LoadLevel()
         {
-            body = new List<Point>();
-            string fileName = "level1.txt";
-            if (gameLevel == GameLevel.SECOND)
-                fileName = "level2.txt";
-            if (gameLevel == GameLevel.THIRD)
-                fileName = "level3.txt";
+            Console.Clear();
 
-            StreamReader sr = new StreamReader(Path.Combine(@"C:\Users\User\PP2\Week6\Snake\Snake\",fileName));
+            body = new List<Point>();
+            string fileName = "Level1.txt";
+
+            if (gameLevel == GameLevel.SECOND)
+                fileName = "Level2.txt";
+            if (gameLevel == GameLevel.THIRD)
+                fileName = "Level3.txt";
+
+            StreamReader sr = new StreamReader(Path.Combine(@"C: \Users\User\PP2\Week6\Snake_Game\Snake_Game",fileName));
             string[] rows = sr.ReadToEnd().Split('\n');
             for (int i = 0; i < rows.Length; i++)
                 for (int j = 0; j < rows[i].Length; j++)
-                    if (rows[i][j] == '*')
+                    if (rows[i][j] == '#')
                         body.Add(new Point(j, i));
         }
 
@@ -46,9 +49,7 @@ namespace Snake
                 gameLevel = GameLevel.SECOND;
             else if (gameLevel == GameLevel.SECOND)
                 gameLevel = GameLevel.THIRD;
-
             LoadLevel();
         }
-
-    }
+    }   
 }
