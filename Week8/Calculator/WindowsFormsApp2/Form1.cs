@@ -218,6 +218,20 @@ namespace WindowsFormsApp2
                 textBox1.Text = calc.result + "";
             }
 
+            else if (btn.Text == "1/x")
+            {
+                calc.operation = btn.Text;
+                calc.Calculate();
+                textBox1.Text = calc.result + "";
+            }
+
+            else if (btn.Text == "%")
+            {
+                calc.operation = btn.Text;
+                calc.Calculate();
+                textBox1.Text = calc.result+"";
+            }
+
             else
             {
                 calc.operation = btn.Text;
@@ -276,6 +290,11 @@ namespace WindowsFormsApp2
             calc.Calculate();
             textBox1.Text = calc.result+"";
             isempty = false;
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
